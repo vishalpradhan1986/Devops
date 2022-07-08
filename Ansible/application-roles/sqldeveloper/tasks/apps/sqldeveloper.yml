@@ -1,0 +1,14 @@
+---
+- name: Download Sqldeveloper installer to local install directory
+  win_get_url:
+    url: '{{ s3_url }}/software/oracle/sql_developer/latest/sqldeveloper-x64.zip'
+    dest: '{{ temp_folder }}\'
+
+- name: Unzip file to directory
+  win_shell: Expand-Archive -Path '{{ temp_folder }}\sqldeveloper-x64.zip' -DestinationPath 'D:'
+
+- name: Create Sqldeveloper App Shortcut on Users Desktop
+  win_shortcut:
+    src:  'D:\sqldeveloper\sqldeveloper.exe'
+    dest: 'C:\users\public\desktop\sqldeveloper.lnk'
+    icon: 'D:\sqldeveloper\sqldeveloper.exe,0'

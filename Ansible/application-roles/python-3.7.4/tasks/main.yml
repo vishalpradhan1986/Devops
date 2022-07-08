@@ -1,0 +1,11 @@
+---
+- include_vars: '{{ provision_env }}.yml'
+
+- name: Create temporary local install directory
+  win_file:
+    path: '{{ temp_folder }}'
+    state: directory
+
+- include_tasks: apps/python-3.7.4.yml
+
+- include_tasks: cleanup.yml

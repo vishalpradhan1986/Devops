@@ -1,0 +1,12 @@
+---
+- include_vars: '{{ provision_env }}.yml'
+
+- name: Create temporary local install directory
+  win_file:
+    path: '{{ temp_folder }}'
+    state: directory
+
+- include_tasks: apps/tableaudesktop.yml
+
+- include_tasks: cleanup.yml
+

@@ -1,0 +1,5 @@
+---
+- name: Remove temp folder
+  win_file:
+    path: '{{ temp_folder }}'
+    state: absent 

@@ -1,0 +1,12 @@
+---
+- name: Download Python3 version 3.6.5 installer to local install directory (x64)
+  win_get_url:
+    url: '{{ s3_url }}/software/python/3.x/3.7.4/python-3.7.4-amd64.exe'
+    dest: '{{ temp_folder }}\'
+
+- name: Install Python 3.7.4
+  win_package:
+    path: '{{ temp_folder }}\python-3.7.4-amd64.exe'
+    product_id: 'python3'
+    state: present
+    arguments: /quiet InstallAllUsers=1 PrependPath=1 CompileAll=1

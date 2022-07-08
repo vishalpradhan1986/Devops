@@ -1,0 +1,14 @@
+---
+- name: Download SQL Server Management Studio installer to local install directory
+  win_get_url:
+    url: '{{ s3_url }}/software/sqlservermanagementstudio/SSMS-Setup-ENU.exe'
+    dest: '{{ temp_folder }}\'
+
+- name: Install SQL Server Management Studio
+  win_package:
+    path: '{{ temp_folder }}\SSMS-Setup-ENU.exe'
+    product_id: 'SSMS'
+    state: present
+    arguments: '/install /quiet /passive /norestart'
+
+

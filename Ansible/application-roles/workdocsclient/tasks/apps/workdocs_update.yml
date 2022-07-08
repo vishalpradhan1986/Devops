@@ -1,0 +1,39 @@
+---
+- name: Check if AWS Workdocs is installed.
+  win_stat:
+    path: 'C:\Program Files\Amazon\AWSWorkDocsDriveClient\AWSWorkDocsDriveClient.exe'
+  register: workdocs_already_installed
+
+- debug: 
+    msg: "{{ workdocs_already_installed }}"
+
+- name: Copy Uninstall AWS Workdocs file to local install directory
+  win_copy:
+    src: files/uninstall_workdocs.ps1
+    dest: '{{ temp_folder }}\'
+  when: workdocs_already_installed.stat.exists
+
+- name: Uninstall AWS Workdocs
+  win_command: 'powershell.exe -ExecutionPolicy ByPass -File {{ temp_folder }}\uninstall_workdocs.ps1'
+  when: workdocs_already_installed.stat.exists
+
+- name: Download AWS Workdocs installer to local install directory
+  win_get_url:
+    url: '{{ s3_url }}/software/workdocs/latest/AWSWorkDocsDriveClient.msi'
+    dest: '{{ temp_folder }}\'
+  when: workdocs_already_installed.stat.exists
+
+- name: Enable Window Windows Modules Installer
+  win_service:
+    name: TrustedInstaller
+    state: started
+    start_mode: manual
+  when: workdocs_already_installed.stat.exists
+
+- name: Install AWS Workdocs
+  win_package:
+    path: '{{ temp_folder }}\AWSWorkDocsDriveClient.msi'
+    product_id: 'AWSWorkDocsDriveClient'
+    state: present
+    arguments: REBOOT=REALLYSUPPRESS /norestart /qn
+  when: workdocs_already_installed.stat.exists

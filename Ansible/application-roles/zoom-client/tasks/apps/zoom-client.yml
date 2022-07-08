@@ -1,0 +1,12 @@
+---
+- name: Download Zoom Client installer to local install directory
+  win_get_url:
+    url: '{{ s3_url }}/software/Zoom-Client/ZoomInstallerFull.msi'
+    dest: '{{ temp_folder }}\'
+
+- name: Install Zoom Client 
+  win_package:
+    path: '{{ temp_folder }}\ZoomInstallerFull.msi'
+    product_id: 'Zoom Client'
+    state: present
+    arguments: '/quiet /qn /norestart'

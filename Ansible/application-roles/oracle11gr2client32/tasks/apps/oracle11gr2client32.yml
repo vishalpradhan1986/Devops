@@ -1,0 +1,29 @@
+- name: Download oracle 11gR2 c lient installer to local install directory
+  win_get_url:
+    url: '{{ s3_url }}/software/oracle/client/win32_11gR2_client.zip'
+    dest: '{{ temp_folder }}\'
+
+- name: Unzip file to directory
+  win_shell: Expand-Archive -Path '{{ temp_folder }}\win32_11gR2_client.zip' -DestinationPath '{{ temp_folder }}'
+
+- name: Copy Response File template
+  win_template:
+    src: client.rsp.j2
+    dest: '{{ temp_folder }}\\client\client.rsp'
+
+- name: Install Oracle 11gR2
+  win_command: "silent.bat"
+  args:
+    chdir: '{{ temp_folder }}\\client'
+
+- name: Add registry path for the new tnsnames.ora file
+  win_regedit:
+    path: HKLM:\Software\WOW6432Node\Oracle\KEY_OraClient11g_home1
+    name: TNS_ADMIN
+    data: \\fortitude-re.net\sysvol\fortitude-re.net\Policies\tns_names
+    type: string
+
+- name: Register DLL
+  win_command: c:\Windows\system32\regsvr32.exe /s OraOLEDB11.dll
+  args:
+    chdir: D:\oracle32\product\11.2.0\client_1\BIN

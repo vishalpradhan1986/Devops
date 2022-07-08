@@ -1,0 +1,11 @@
+- name: Download tableaudesktop installer to local install directory
+  win_get_url:
+    url: '{{ s3_url }}/software/tableau/TableauDesktop-64bit-2019-3-0.exe'
+    dest: '{{ temp_folder }}\'
+
+- name: Install tableaudesktop
+  win_package:
+    path: '{{ temp_folder }}\TableauDesktop-64bit-2019-3-0.exe'
+    product_id: 'tableaudesktop'
+    state: present
+    arguments: /quiet /norestart ACCEPTEULA=1
